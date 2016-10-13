@@ -1,7 +1,7 @@
 import numpy as np
 import random
 from InitializePopulation import InitializePopulation
-from DecodeChromosome import DecodeChromosome
+from DecodeChromosome import DotaDecode
 from EvaluateIndividual import EvaluateIndividual
 from TournamentSelect import TournamentSelect
 from Cross import Cross
@@ -35,9 +35,9 @@ if __name__ == '__main__':
             decodedPopulation=np.zeros((populationSize,numberOfVariables))
             for i in range(populationSize):
                 chromosome=population[i,:]
-                x=DecodeChromosome(chromosome,numberOfVariables,variableRange)
+                x=DotaDecode(chromosome,numberOfVariables,variableRange)
                 decodedPopulation[i,:]=x[:]
-                fitness[i]=EvaluateIndividual(x)
+                fitness[i]=EvaluateIndividual(x)  ### NEED TO THINK ON HOW TO IMPLEMENT EVALUATION: TOURNAMENT?
                 if fitness[i]>maximumFitness:
                     maximumFitness=fitness[i]
                     bestIndividualIndex=i

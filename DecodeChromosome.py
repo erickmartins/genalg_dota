@@ -17,7 +17,11 @@ def DecodeChromosome(chromosome, numberOfVariables, variableRange):
 
 
 
-
+def DotaDecode(chromosome,numberOfVariables,variableRange):
+    x=DecodeChromosome(chromosome,numberOfVariables,variableRange)
+    x=x+variableRange
+    x=x/sum(x)
+    return x
 
 
 
@@ -25,7 +29,7 @@ def DecodeChromosome(chromosome, numberOfVariables, variableRange):
 if __name__ == '__main__':
     random.seed()
     chromosomeSize = 100
-    numberOfVariables = 5
+    numberOfVariables = 10
     variableRange=0.5
     chromosome=np.zeros(chromosomeSize)
     for i in range(chromosomeSize):
@@ -34,6 +38,7 @@ if __name__ == '__main__':
             chromosome[i]=0
         else:
             chromosome[i]=1
-    decodedVariables=DecodeChromosome(chromosome,numberOfVariables,variableRange)
+    decodedVariables=DotaDecode(chromosome,numberOfVariables,variableRange)
     for i in range(numberOfVariables):
         print("variable "+str(i)+": "+str(decodedVariables[i]))
+    print("sum: "+str(sum(decodedVariables)))
