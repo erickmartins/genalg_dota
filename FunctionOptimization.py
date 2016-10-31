@@ -2,7 +2,7 @@ import numpy as np
 import random
 from InitializePopulation import InitializePopulation
 from DecodeChromosome import DotaDecode
-from EvaluateIndividual import EvaluateIndividual
+from EvaluateIndividual import DotaEvaluate
 from TournamentSelect import TournamentSelect
 from Cross import Cross
 from Mutate import Mutate
@@ -10,16 +10,16 @@ from Mutate import Mutate
 if __name__ == '__main__':
 
     populationSize=100;
-    numberOfGenes=60;
-    numberOfVariables=2;
+    numberOfVariables=30;
+    numberOfGenes=5*numberOfVariables;
     crossoverProbability=0.8;
     mutationProbability=0.033;
     tournamentSelectionParameter=0.9;
     tournamentSize=5;
     numberOfGenerations=100;
-    variableRange=5.0;
+    variableRange=1.0;
     fitness=np.zeros(populationSize)
-    numberOfRuns=2
+    numberOfRuns=1
     numberOfCopies=1
     results=np.zeros((numberOfRuns,numberOfVariables))
     bestFitnesses=np.zeros(numberOfRuns)
@@ -31,13 +31,21 @@ if __name__ == '__main__':
         bestIndividualIndex=0
 
         for iGeneration in range(numberOfGenerations):
+            print("generation "+str(iGeneration))
             maximumFitness=0.0
             decodedPopulation=np.zeros((populationSize,numberOfVariables))
             for i in range(populationSize):
                 chromosome=population[i,:]
                 x=DotaDecode(chromosome,numberOfVariables,variableRange)
                 decodedPopulation[i,:]=x[:]
-                fitness[i]=EvaluateIndividual(x)  ### NEED TO THINK ON HOW TO IMPLEMENT EVALUATION: TOURNAMENT?
+            for i in range(populationSize):
+                j=-1
+                y=[]
+                while j==i:
+                    j=random.randint(0,populationSize-1)
+                x[:]=decodedPopulation[i,:]
+                y[:]=decodedPopulation[j,:]
+                fitness[i]=DotaEvaluate(x,y,numberOfVariables)[0]  ### NEED TO THINK ON HOW TO IMPLEMENT EVALUATION: TOURNAMENT?
                 if fitness[i]>maximumFitness:
                     maximumFitness=fitness[i]
                     bestIndividualIndex=i
