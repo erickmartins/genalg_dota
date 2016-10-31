@@ -6,17 +6,23 @@ from EvaluateIndividual import DotaEvaluate
 from TournamentSelect import TournamentSelect
 from Cross import Cross
 from Mutate import Mutate
+import os
 
 if __name__ == '__main__':
+    FunctionOptimization(99)
 
+def FunctionOptimization(run):
+    # seed=os.urandom(8)
+    seed=run
+    random.seed(seed)
     populationSize=100;
     numberOfVariables=30;
-    numberOfGenes=5*numberOfVariables;
+    numberOfGenes=10*numberOfVariables;
     crossoverProbability=0.8;
     mutationProbability=0.033;
     tournamentSelectionParameter=0.9;
     tournamentSize=5;
-    numberOfGenerations=100;
+    numberOfGenerations=1;
     variableRange=1.0;
     fitness=np.zeros(populationSize)
     numberOfRuns=1
@@ -25,12 +31,14 @@ if __name__ == '__main__':
     bestFitnesses=np.zeros(numberOfRuns)
 
     for iRun in range(numberOfRuns):
-        print("run "+str(iRun))
+        # print("run "+str(iRun))
         population=InitializePopulation(populationSize,numberOfGenes)
+        print(population)
         xBest=np.zeros(numberOfVariables)
         bestIndividualIndex=0
 
         for iGeneration in range(numberOfGenerations):
+            fitness=np.zeros(populationSize)
             print("generation "+str(iGeneration))
             maximumFitness=0.0
             decodedPopulation=np.zeros((populationSize,numberOfVariables))
@@ -38,14 +46,16 @@ if __name__ == '__main__':
                 chromosome=population[i,:]
                 x=DotaDecode(chromosome,numberOfVariables,variableRange)
                 decodedPopulation[i,:]=x[:]
+            # print(decodedPopulation)
             for i in range(populationSize):
-                j=-1
                 y=[]
-                while j==i:
-                    j=random.randint(0,populationSize-1)
-                x[:]=decodedPopulation[i,:]
-                y[:]=decodedPopulation[j,:]
-                fitness[i]=DotaEvaluate(x,y,numberOfVariables)[0]  ### NEED TO THINK ON HOW TO IMPLEMENT EVALUATION: TOURNAMENT?
+                for j in range(populationSize):
+                    if i==j:
+                        continue
+
+                    x[:]=decodedPopulation[i,:]
+                    y[:]=decodedPopulation[j,:]
+                    fitness[i]=fitness[i]+DotaEvaluate(x,y,numberOfVariables)[0]  ### NEED TO THINK ON HOW TO IMPLEMENT EVALUATION: TOURNAMENT?
                 if fitness[i]>maximumFitness:
                     maximumFitness=fitness[i]
                     bestIndividualIndex=i
@@ -76,6 +86,11 @@ if __name__ == '__main__':
         results[iRun,:]=xBest
         bestFitnesses[iRun]=maximumFitness
 
-
-    print(results)
-    print(bestFitnesses)
+    filename="tst_"+str(run)+".log"
+    fp=open(filename,"w")
+    for i in range(populationSize):
+        chromosome=population[i,:]
+        x=DotaDecode(chromosome,numberOfVariables,variableRange)
+        fp.write(str(x)+"\n")
+    fp.write(str(fitness)+"\n")
+    fp.close()

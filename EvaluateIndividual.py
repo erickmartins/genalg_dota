@@ -34,9 +34,9 @@ def DotaEvaluate(x,y,numberOfVariables):
     # print(pick1,pick2)
     fitness=np.zeros(2)
     for j in pick1:
-        fitness[0]=fitness[0]+sum([mat[j,int(i)] for i in pick2])
+        fitness[0]=fitness[0]+sum([mat[int(j),int(i)] for i in pick2])
     for j in pick2:
-        fitness[1]=fitness[1]+sum([mat[j,int(i)] for i in pick1])
+        fitness[1]=fitness[1]+sum([mat[int(j),int(i)] for i in pick1])
 
     fp.close()
     # print(fitness)

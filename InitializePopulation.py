@@ -1,10 +1,16 @@
 import numpy as np
 import random
+import os
 
 
 def InitializePopulation(populationSize,numberOfGenes):
-    random.seed()
+    seed=os.urandom(8)
+    random.seed(seed)
+    newseed=random.randint(0,1000000)
+    # print(newseed)
+    np.random.seed(newseed)
     population=np.random.choice([0, 1],size=(populationSize,numberOfGenes))
+    # print (population)
     return population
 
 
