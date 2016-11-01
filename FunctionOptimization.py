@@ -2,11 +2,12 @@ import numpy as np
 import random
 from InitializePopulation import InitializePopulation
 from DecodeChromosome import DotaDecode
-from EvaluateIndividual import DotaEvaluate
+from EvaluateIndividual import DotaEvaluate, LoadAdvantages
 from TournamentSelect import TournamentSelect
 from Cross import Cross
 from Mutate import Mutate
 import os
+import time
 
 if __name__ == '__main__':
     FunctionOptimization(99)
@@ -22,13 +23,14 @@ def FunctionOptimization(run):
     mutationProbability=0.033;
     tournamentSelectionParameter=0.9;
     tournamentSize=5;
-    numberOfGenerations=1;
+    numberOfGenerations=1000;
     variableRange=1.0;
     fitness=np.zeros(populationSize)
     numberOfRuns=1
     numberOfCopies=1
     results=np.zeros((numberOfRuns,numberOfVariables))
     bestFitnesses=np.zeros(numberOfRuns)
+    mat=LoadAdvantages(numberOfVariables)
 
     for iRun in range(numberOfRuns):
         # print("run "+str(iRun))
@@ -39,7 +41,7 @@ def FunctionOptimization(run):
 
         for iGeneration in range(numberOfGenerations):
             fitness=np.zeros(populationSize)
-            print("generation "+str(iGeneration))
+            print("generation "+str(iGeneration)+" "+str(time.time())+"\n")
             maximumFitness=0.0
             decodedPopulation=np.zeros((populationSize,numberOfVariables))
             for i in range(populationSize):
@@ -55,7 +57,7 @@ def FunctionOptimization(run):
 
                     x[:]=decodedPopulation[i,:]
                     y[:]=decodedPopulation[j,:]
-                    fitness[i]=fitness[i]+DotaEvaluate(x,y,numberOfVariables)[0]  ### NEED TO THINK ON HOW TO IMPLEMENT EVALUATION: TOURNAMENT?
+                    fitness[i]=fitness[i]+DotaEvaluate(x,y,numberOfVariables,mat)[0]  ### NEED TO THINK ON HOW TO IMPLEMENT EVALUATION: TOURNAMENT?
                 if fitness[i]>maximumFitness:
                     maximumFitness=fitness[i]
                     bestIndividualIndex=i
