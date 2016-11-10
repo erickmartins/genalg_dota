@@ -2,28 +2,29 @@ import numpy as np
 import random
 from InitializePopulation import InitializePopulation
 from DecodeChromosome import DotaDecode
-from EvaluateIndividual import DotaEvaluate, LoadAdvantages
+from EvaluateIndividual import DotaEvaluate, LoadAdvantages, randDotaEvaluate
 from TournamentSelect import TournamentSelect
 from Cross import Cross
 from Mutate import Mutate
+from InsertBestIndividual import InsertBestIndividual
 import os
 import time
 
-if __name__ == '__main__':
-    FunctionOptimization(99)
+
 
 def FunctionOptimization(run):
     # seed=os.urandom(8)
     seed=run
     random.seed(seed)
+    numberOfCopies=1
     populationSize=100;
     numberOfVariables=30;
     numberOfGenes=10*numberOfVariables;
-    crossoverProbability=0.8;
+    crossoverProbability=0.5;
     mutationProbability=0.033;
-    tournamentSelectionParameter=0.9;
+    tournamentSelectionParameter=0.8;
     tournamentSize=5;
-    numberOfGenerations=1000;
+    numberOfGenerations=10000;
     variableRange=1.0;
     fitness=np.zeros(populationSize)
     numberOfRuns=1
@@ -31,17 +32,17 @@ def FunctionOptimization(run):
     results=np.zeros((numberOfRuns,numberOfVariables))
     bestFitnesses=np.zeros(numberOfRuns)
     mat=LoadAdvantages(numberOfVariables)
-
+    bestChromosome=np.zeros(numberOfGenes)
     for iRun in range(numberOfRuns):
         # print("run "+str(iRun))
         population=InitializePopulation(populationSize,numberOfGenes)
         print(population)
         xBest=np.zeros(numberOfVariables)
         bestIndividualIndex=0
-
+        maximumFitness=0
         for iGeneration in range(numberOfGenerations):
             fitness=np.zeros(populationSize)
-            print("generation "+str(iGeneration)+" "+str(time.time())+"\n")
+
             maximumFitness=0.0
             decodedPopulation=np.zeros((populationSize,numberOfVariables))
             for i in range(populationSize):
@@ -51,16 +52,17 @@ def FunctionOptimization(run):
             # print(decodedPopulation)
             for i in range(populationSize):
                 y=[]
-                for j in range(populationSize):
-                    if i==j:
-                        continue
-
-                    x[:]=decodedPopulation[i,:]
-                    y[:]=decodedPopulation[j,:]
-                    fitness[i]=fitness[i]+DotaEvaluate(x,y,numberOfVariables,mat)[0]  ### NEED TO THINK ON HOW TO IMPLEMENT EVALUATION: TOURNAMENT?
+                # for j in range(populationSize):
+                #     if i==j:
+                #         continue
+                #
+                x[:]=decodedPopulation[i,:]
+                #     y[:]=decodedPopulation[j,:]
+                fitness[i]=randDotaEvaluate(x,numberOfVariables,mat)  ### NEED TO THINK ON HOW TO IMPLEMENT EVALUATION: TOURNAMENT?
                 if fitness[i]>maximumFitness:
                     maximumFitness=fitness[i]
                     bestIndividualIndex=i
+                    bestChromosome[:]=population[i,:]
                     xBest=x
 
             tempPopulation=population[:]
@@ -85,8 +87,15 @@ def FunctionOptimization(run):
                 mutatedChromosome=Mutate(originalChromosome,mutationProbability)
                 tempPopulation[i,:]=mutatedChromosome[:]
             population[:]=tempPopulation[:]
+            # print(population[0,:])
+            # print(population[bestIndividualIndex,:])
+            population[:]=InsertBestIndividual(population,bestChromosome,numberOfCopies)
+            # print(population[0,:])
+            print("generation "+str(iGeneration)+" "+str(time.time())+"best fitness: "+str(maximumFitness)+" best individual: "+str(bestIndividualIndex)+"\n")
+            # print(fitness)
         results[iRun,:]=xBest
         bestFitnesses[iRun]=maximumFitness
+
 
     filename="tst_"+str(run)+".log"
     fp=open(filename,"w")
@@ -96,3 +105,9 @@ def FunctionOptimization(run):
         fp.write(str(x)+"\n")
     fp.write(str(fitness)+"\n")
     fp.close()
+
+
+
+
+if __name__ == '__main__':
+    FunctionOptimization(99)

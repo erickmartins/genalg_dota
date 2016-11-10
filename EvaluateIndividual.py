@@ -30,6 +30,15 @@ def LoadAdvantages(numberOfVariables):
     fp.close()
     return mat
 
+def randDotaEvaluate(x,numberOfVariables,mat):
+    vec=np.array([1./numberOfVariables]*numberOfVariables)
+    # print(vec)
+    prod1=np.dot(x,mat)
+    prod2=np.dot(prod1,vec)
+    # print(x,prod2)
+    return prod2
+
+
 def DotaEvaluate(x,y,numberOfVariables,mat):
     # random.seed()
 
@@ -62,13 +71,17 @@ def DotaEvaluate(x,y,numberOfVariables,mat):
 
 if __name__ == '__main__':
     from DecodeChromosome import DotaDecode
-    print("teste: ")
+    # print("teste: ")
     numberOfVariables=30
     x=np.random.choice([0,1],size=numberOfVariables*10)
     xdec=DotaDecode(x,numberOfVariables,0.5)
-    y=np.random.choice([0,1],size=numberOfVariables*10)
-    ydec=DotaDecode(y,numberOfVariables,0.5)
-    print(xdec,ydec)
-    # print(DotaEvaluate(xdec,ydec,numberOfVariables))
-    chosen=weighted_choice(range(numberOfVariables),xdec)
-    print(chosen)
+    mat=LoadAdvantages(numberOfVariables)
+    # y=np.random.choice([0,1],size=numberOfVariables*10)
+    # ydec=DotaDecode(y,numberOfVariables,0.5)
+    # print(xdec,ydec)
+    # # print(DotaEvaluate(xdec,ydec,numberOfVariables))
+    # chosen=weighted_choice(range(numberOfVariables),xdec)
+    # print(chosen)
+
+    fit=randDotaEvaluate(xdec,numberOfVariables,mat)
+    print(fit)
