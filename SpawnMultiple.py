@@ -3,8 +3,6 @@ import time
 from FunctionOptimization import FunctionOptimization
 import random
 import os
-import cProfile
-
 
 def TestFunc(num):
     seed=os.urandom(8)
@@ -19,10 +17,6 @@ def TestFunc(num):
     # time.sleep(2)
     return res
 
-
-def WrapperFunctionOptimization(i):
-    # cProfile.runctx('FunctionOptimization(i)',globals(), locals(), 'prof%d.prof' %i)
-    FunctionOptimization(i)
 
 
 
@@ -46,7 +40,7 @@ def seqrun(runs,func):
 if __name__ == '__main__':
     runs=4
     # func=TestFunc
-    func=WrapperFunctionOptimization
+    func=FunctionOptimization
     # t1=time.time()
     # print(t1)
     SpawnMultiple(runs,func)

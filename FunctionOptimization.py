@@ -2,13 +2,16 @@ import numpy as np
 import random
 from InitializePopulation import InitializePopulation
 from DecodeChromosome import DotaDecode
+<<<<<<< HEAD
 from EvaluateIndividual import DotaEvaluate, LoadAdvantages, randDotaEvaluate
+=======
+from EvaluateIndividual import DotaEvaluate
+>>>>>>> parent of 5732fa1... efficiencies gained on evaluation, mainly
 from TournamentSelect import TournamentSelect
 from Cross import Cross
 from Mutate import Mutate
 from InsertBestIndividual import InsertBestIndividual
 import os
-import time
 
 
 
@@ -24,15 +27,23 @@ def FunctionOptimization(run):
     mutationProbability=0.033;
     tournamentSelectionParameter=0.8;
     tournamentSize=5;
+<<<<<<< HEAD
     numberOfGenerations=10000;
+=======
+    numberOfGenerations=1;
+>>>>>>> parent of 5732fa1... efficiencies gained on evaluation, mainly
     variableRange=1.0;
     fitness=np.zeros(populationSize)
     numberOfRuns=1
     numberOfCopies=1
     results=np.zeros((numberOfRuns,numberOfVariables))
     bestFitnesses=np.zeros(numberOfRuns)
+<<<<<<< HEAD
     mat=LoadAdvantages(numberOfVariables)
     bestChromosome=np.zeros(numberOfGenes)
+=======
+
+>>>>>>> parent of 5732fa1... efficiencies gained on evaluation, mainly
     for iRun in range(numberOfRuns):
         # print("run "+str(iRun))
         population=InitializePopulation(populationSize,numberOfGenes)
@@ -42,7 +53,11 @@ def FunctionOptimization(run):
         maximumFitness=0
         for iGeneration in range(numberOfGenerations):
             fitness=np.zeros(populationSize)
+<<<<<<< HEAD
 
+=======
+            print("generation "+str(iGeneration))
+>>>>>>> parent of 5732fa1... efficiencies gained on evaluation, mainly
             maximumFitness=0.0
             decodedPopulation=np.zeros((populationSize,numberOfVariables))
             for i in range(populationSize):
@@ -52,6 +67,7 @@ def FunctionOptimization(run):
             # print(decodedPopulation)
             for i in range(populationSize):
                 y=[]
+<<<<<<< HEAD
                 # for j in range(populationSize):
                 #     if i==j:
                 #         continue
@@ -59,6 +75,15 @@ def FunctionOptimization(run):
                 x[:]=decodedPopulation[i,:]
                 #     y[:]=decodedPopulation[j,:]
                 fitness[i]=randDotaEvaluate(x,numberOfVariables,mat)  ### NEED TO THINK ON HOW TO IMPLEMENT EVALUATION: TOURNAMENT?
+=======
+                for j in range(populationSize):
+                    if i==j:
+                        continue
+
+                    x[:]=decodedPopulation[i,:]
+                    y[:]=decodedPopulation[j,:]
+                    fitness[i]=fitness[i]+DotaEvaluate(x,y,numberOfVariables)[0]  ### NEED TO THINK ON HOW TO IMPLEMENT EVALUATION: TOURNAMENT?
+>>>>>>> parent of 5732fa1... efficiencies gained on evaluation, mainly
                 if fitness[i]>maximumFitness:
                     maximumFitness=fitness[i]
                     bestIndividualIndex=i
